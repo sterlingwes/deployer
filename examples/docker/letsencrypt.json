@@ -1,0 +1,7 @@
+{
+  "server": "staging",
+  "email": "wes@mobywan.com",
+  "agreeTos": true,
+  "approvedDomains": [ "ssl.mobywan.com", "mobywan.com" ],
+  "debug": true
+}

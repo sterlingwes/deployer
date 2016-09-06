@@ -129,6 +129,7 @@ function ubuntuScript () {
 
 start on filesystem and started networking
 respawn
+console log
 exec deploy start
 `
   return upstart

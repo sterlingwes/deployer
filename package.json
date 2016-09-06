@@ -1,5 +1,5 @@
 {
-  "name": "docker-deployer",
+  "name": "deployer",
   "version": "1.0.0",
   "description": "Small server for handling webhooks and running commands",
   "main": "./bin/deployer.js",

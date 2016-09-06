@@ -9,13 +9,19 @@ const parser = require('body-parser')
 
 app.use(parser.json())
 
-const argv = yargs
+const cmd = yargs
   .usage('Usage: $0 <command> [options]')
   .command('start', 'Start the server')
-  .argv
+  .command('setup-ubuntu', 'Provides the ubuntu startup script')
+  .help()
 
-console.log('args', argv)
+const argv = cmd.argv
 
+if (!argv._.length) cmd.showHelp() && exit()
+if (argv._.indexOf('setup-ubuntu') !== -1) ubuntuScript() && exit()
+
+// determine config location
+//
 const configPath = argv.f || 'deploy.config.js'
 const cwd = argv.d && argv.d[0] === '/' ? argv.d : path.resolve(__dirname, argv.d || './')
 const conf = require(`${cwd}/${configPath}`)
@@ -23,6 +29,8 @@ const conf = require(`${cwd}/${configPath}`)
 console.log('path', configPath)
 console.log('cwd', cwd)
 
+// for each app config, setup the routes
+//
 Object.keys(conf).forEach(name => {
   const config = conf[name]
   if (typeof config !== 'object') return
@@ -99,4 +107,37 @@ function slackNotify (message) {
     if (err) return console.error('Slack send error', err)
     console.log('Sent event to slack, response:', body)
   })
+}
+
+//
+// UBUNTU UPSTART SCRIPT
+//
+
+function ubuntuScript () {
+  const upstart =
+`
+#
+# deployer upstart script
+#
+# to install, sudo this output to a file for your service name
+#
+# ie: sudo deployer setup-ubuntu > /etc/init/deployer.conf
+#
+# WARNING: this will run the deployer as a root user unless
+# you define a user with the -u flag (TODO)
+#
+
+start on filesystem and started networking
+respawn
+exec deploy start
+`
+  return upstart
+}
+
+//
+// ABORT CONVENIENCE
+//
+
+function exit (code) {
+  process.exit(code || 0)
 }

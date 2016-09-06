@@ -132,6 +132,7 @@ respawn
 console log
 exec deploy start
 `
+  console.log(upstart)
   return upstart
 }
 
